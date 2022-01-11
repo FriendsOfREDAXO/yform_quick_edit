@@ -15,6 +15,7 @@ $(document).on('rex:ready', function () {
       const $parent = $(activeFrame[0]).parents('tr');
       activeFrame[0].iFrameResizer.close();
       $parent.remove();
+      active = null;
     }
 
     if (active !== $element.data('id')) {
