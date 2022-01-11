@@ -1,4 +1,5 @@
 let active = null;
+let activeFrame = null;
 
 $(document).on('rex:ready', function () {
   const $quickEdit = $('a.yform-quick-edit');
@@ -11,25 +12,22 @@ $(document).on('rex:ready', function () {
 
     if (active) {
       $('tr.quick-edit-row-' + active).removeClass('active');
+      activeFrame[0].iFrameResizer.close();
     }
 
     if (active !== $element.data('id')) {
       active = $element.data('id');
       $('tr.quick-edit-row-' + active).addClass('active');
-
-      $('#yform-quick-edit-frame').remove();
       $row.after('<tr><td style="padding: 0" colspan="' + colspan + '"><iframe id="yform-quick-edit-frame" style="border: 0; width: 100%; height: 560px;"></iframe></td></tr>');
       $('#yform-quick-edit-frame').attr('src', $element.attr('href'));
-
-      /**
-       * TODO: wait until iframe src is loaded
-       */
-      setTimeout(() => {
-        iFrameResize({
-          log: true,
-          heightCalculationMethod: 'bodyScroll'
-        }, '#yform-quick-edit-frame');
-      }, 500)
     }
   })
 })
+
+function quickEditLoaded() {
+  setTimeout(() => {
+    activeFrame = iFrameResize({
+      heightCalculationMethod: 'bodyScroll'
+    }, '#yform-quick-edit-frame');
+  }, 250)
+}

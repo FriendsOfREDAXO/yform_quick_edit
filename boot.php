@@ -4,6 +4,7 @@ $addon = \rex_addon::get('yform_quick_edit');
 if (\rex::isBackend() && \rex::getUser()) {
     if (rex_get('quick_edit') === 'true') {
         \rex_view::addJsFile($addon->getAssetsUrl('js/vendor/iframeResizer.contentWindow.min.js'));
+        \rex_view::addJsFile($addon->getAssetsUrl('js/scripts-frame.js'));
         \rex_view::addCssFile($addon->getAssetsUrl('css/style.css'));
     }
     else {
