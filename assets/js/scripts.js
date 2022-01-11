@@ -12,7 +12,9 @@ $(document).on('rex:ready', function () {
 
     if (active) {
       $('tr.quick-edit-row-' + active).removeClass('active');
+      const $parent = $(activeFrame[0]).parents('tr');
       activeFrame[0].iFrameResizer.close();
+      $parent.remove();
     }
 
     if (active !== $element.data('id')) {
