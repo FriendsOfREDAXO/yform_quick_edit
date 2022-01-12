@@ -80,7 +80,7 @@ function quickEditResize() {
   }
 }
 
-function quickEditCloseFrame() {
+function quickEditCloseFrame(updateRow) {
   if (activeFrame) {
     /**
      * replace row
@@ -88,6 +88,13 @@ function quickEditCloseFrame() {
      */
     quickEditRemoveFrame();
     $(activeRowSelector).removeClass('active');
+
+    if(updateRow) {
+      $(activeRowSelector).load(window.location.href + ' ' + activeRowSelector + ' > *', () => {
+        quickEditAttachEventHandler();
+      });
+    }
+
     active = null;
     activeFrame = null;
     activeRowSelector = null;

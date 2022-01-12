@@ -27,7 +27,7 @@ $(document).on('rex:ready', function () {
         }
         else {
           parent.quickEditHideLoading();
-          parent.quickEditCloseFrame();
+          parent.quickEditCloseFrame(true);
         }
       },
       error: (e) => {
