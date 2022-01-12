@@ -1,36 +1,108 @@
 let active = null;
 let activeFrame = null;
+let activeRowSelector = null;
+let $rexAjaxLoader;
 
 $(document).on('rex:ready', function () {
+  quickEditAttachEventHandler();
+  $rexAjaxLoader = $('#rex-js-ajax-loader');
+});
+
+function quickEditAttachEventHandler() {
   const $quickEdit = $('a.yform-quick-edit');
 
+  $quickEdit.off('click');
   $quickEdit.on('click', function (event) {
     event.preventDefault();
     const $element = $(event.currentTarget);
     const $row = $element.parents('tr');
     const colspan = $row.find('td').length;
 
-    if (active) {
-      $('tr.quick-edit-row-' + active).removeClass('active');
-      const $parent = $(activeFrame[0]).parents('tr');
-      activeFrame[0].iFrameResizer.close();
-      $parent.remove();
-      active = null;
-    }
+    quickEditShowLoading();
 
     if (active !== $element.data('id')) {
       active = $element.data('id');
-      $('tr.quick-edit-row-' + active).addClass('active');
-      $row.after('<tr><td style="padding: 0" colspan="' + colspan + '"><iframe id="yform-quick-edit-frame" style="border: 0; width: 100%; height: 560px;"></iframe></td></tr>');
+      activeRowSelector = 'tr.quick-edit-row-' + active;
+      $(activeRowSelector).addClass('active');
+      $row.after('<tr><td style="padding: 0" colspan="' + colspan + '"><iframe id="yform-quick-edit-frame" style="border: 0; width: 100%; height: 0"></iframe></td></tr>');
       $('#yform-quick-edit-frame').attr('src', $element.attr('href'));
+      $(window).scrollTop($row.offset().top);
+    }
+    else {
+      $(activeRowSelector).removeClass('active');
+      quickEditRemoveFrame();
+      active = null;
+      quickEditHideLoading();
     }
   })
-})
+}
 
 function quickEditLoaded() {
+  /**
+   * wait until iframe src is loaded
+   * timeout - wait for wysiwyg editors...
+   */
   setTimeout(() => {
     activeFrame = iFrameResize({
       heightCalculationMethod: 'bodyScroll'
     }, '#yform-quick-edit-frame');
+
+    quickEditHideLoading();
   }, 250)
+}
+
+function quickEditReload() {
+  /**
+   * reload iframe src
+   */
+  if (activeFrame) {
+    $(activeFrame[0]).attr('src', (i, src) => {
+      return src;
+    });
+  }
+}
+
+function quickEditResize() {
+  /**
+   * resize iframe
+   */
+  if (activeFrame) {
+    activeFrame[0].iFrameResizer.resize();
+  }
+}
+
+function quickEditCloseFrame() {
+  if (activeFrame) {
+    /**
+     * replace row
+     * reset active elements
+     */
+    quickEditRemoveFrame();
+    $(activeRowSelector).removeClass('active');
+    $(activeRowSelector).load(window.location.href + ' ' + activeRowSelector + ' > *', () => {
+      quickEditAttachEventHandler();
+    });
+    active = null;
+    activeFrame = null;
+    activeRowSelector = null;
+  }
+}
+
+function quickEditRemoveFrame() {
+  if (activeFrame) {
+    /**
+     * remove frame
+     */
+    const $parent = $(activeFrame[0]).parents('tr');
+    activeFrame[0].iFrameResizer.close();
+    $parent.remove();
+  }
+}
+
+function quickEditShowLoading() {
+  $rexAjaxLoader.addClass('rex-visible');
+}
+
+function quickEditHideLoading() {
+  $rexAjaxLoader.removeClass('rex-visible');
 }
