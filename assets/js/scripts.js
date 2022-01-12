@@ -6,6 +6,12 @@ let $rexAjaxLoader;
 $(document).on('rex:ready', function () {
   quickEditAttachEventHandler();
   $rexAjaxLoader = $('#rex-js-ajax-loader');
+
+  $(document).on('keyup', function(event) {
+    if (event.key === 'Escape') {
+      quickEditCloseFrame();
+    }
+  });
 });
 
 function quickEditAttachEventHandler() {
