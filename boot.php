@@ -13,7 +13,7 @@ if (\rex::isBackend() && \rex::getUser()) {
 
     \rex_view::addJsFile($addon->getAssetsUrl('js/scripts.js'));
 
-    \rex_extension::register("YFORM_DATA_LIST", function ($ep) {
+    \rex_extension::register('YFORM_DATA_LIST', function ($ep) {
         /** @var rex_list $list */
         $list = $ep->getSubject();
         $listParams = $list->getParams();

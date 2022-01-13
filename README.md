@@ -12,4 +12,4 @@ Das kann nützlich sein wenn z.B. in mehreren Datensätzen nur schnell ein Wert 
 
 - [ ] YForm 4 testen
 - [ ] Button zum abbrechen hinzufügen
-- [ ] Einzelne Felder ignorieren/ausblenden
+- [x] Einzelne Felder ignorieren/ausblenden
