@@ -9,7 +9,14 @@ $(document).on('rex:ready', function () {
 
   $fieldsToIgnore.each((i, element) => {
     const $element = $(element);
-    $element.closest('.form-group').css('display', 'none');
+    const $formGroup = $element.closest('.form-group');
+
+    if($formGroup.length) {
+      $formGroup.hide();
+    }
+    else {
+      $element.hide();
+    }
   });
 
   $form.on('submit', event => {
@@ -49,9 +56,9 @@ $(document).on('rex:ready', function () {
         }
       },
       error: (e) => {
-        //
+        console.error('YForm QuickEdit', '  ↴', '\n', e);
       },
-      complete: (e) => {
+      complete: () => {
         parent.quickEditHideLoading();
 
         if(success) {
