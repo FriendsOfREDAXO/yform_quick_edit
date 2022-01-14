@@ -6,6 +6,8 @@ Mit QuickEdit lassen sich YForm-Datensätze ein wenig schneller, direkt aus der 
 
 Das kann nützlich sein wenn z.B. in mehreren Datensätzen nur schnell ein Wert geändert werden soll.
 
+Einzelne Felder können mit der Klasse `.yqu-ignore` ausgeblendet werden.
+
 ![yform_quick_edit](https://user-images.githubusercontent.com/2708231/149215990-ede6a98d-ef73-41ea-9b3c-d226430cbd09.png)
 
 ### TODO:
