@@ -39,7 +39,7 @@ function quickEditAttachEventHandler() {
       active = id;
       activeRowSelector = 'tr.quick-edit-row-' + active;
       $(activeRowSelector).addClass('active');
-      $row.after('<tr><td style="padding: 0" colspan="' + colspan + '"><iframe id="yform-quick-edit-frame" style="border: 0; width: 100%; height: 0"></iframe></td></tr>');
+      $row.after('<tr><td style="padding: 0;" colspan="' + colspan + '"><iframe id="yform-quick-edit-frame" style="border: 0; width: 100%; height: 0; display: block"></iframe></td></tr>');
       $('#yform-quick-edit-frame').attr('src', $element.attr('href'));
       $(window).scrollTop($row.offset().top);
     }
