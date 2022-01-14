@@ -6,6 +6,7 @@ if (\rex::isBackend() && \rex::getUser()) {
         \rex_view::addJsFile($addon->getAssetsUrl('js/vendor/iframeResizer.contentWindow.min.js'));
         \rex_view::addJsFile($addon->getAssetsUrl('js/scripts-frame.js'));
         \rex_view::addCssFile($addon->getAssetsUrl('css/style.css'));
+        \rex_view::setJsProperty('yqeCancel', $addon->i18n('yform_quick_edit_cancel'));
     }
     else {
         \rex_view::addJsFile($addon->getAssetsUrl('js/vendor/iframeResizer.min.js'));
