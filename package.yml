@@ -8,3 +8,12 @@ requires:
     redaxo: ^5.12.0
     php:
         version: '>=7.1'
+
+installer_ignore:
+  - node_modules
+  - .git
+  - .gitignore
+  - .gitignore
+  - package.json
+  - yarn.lock
+  - resources
