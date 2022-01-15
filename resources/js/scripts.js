@@ -9,6 +9,7 @@ class QuickEdit {
     this.active = null;
     this.activeFrame = null;
     this.activeRowSelector = null;
+    this.frameId = null;
     this.$rexAjaxLoader = $('#rex-js-ajax-loader');
 
     this.attachEventHandler();
@@ -43,10 +44,11 @@ class QuickEdit {
         this.closeFrame();
 
         this.active = id;
+        this.frameId = 'yform-quick-edit-frame-'+((Math.random() * 200).toString(36)).replace('.', '');
         this.activeRowSelector = 'tr.quick-edit-row-' + this.active;
         $(this.activeRowSelector).addClass('active');
-        $row.after('<tr><td style="padding: 0;" colspan="' + colspan + '"><iframe id="yform-quick-edit-frame" style="border: 0; width: 100%; height: 0; display: block"></iframe></td></tr>');
-        $('#yform-quick-edit-frame').attr('src', $element.attr('href'));
+        $row.after('<tr><td style="padding: 0;" colspan="' + colspan + '"><iframe id="'+this.frameId+'" style="border: 0; width: 100%; height: 0; display: block"></iframe></td></tr>');
+        $('#'+this.frameId).attr('src', $element.attr('href'));
         $(window).scrollTop($row.offset().top);
 
         this.setIframe();
@@ -60,7 +62,7 @@ class QuickEdit {
     this.activeFrame = iFrameResize({
       heightCalculationMethod: 'bodyScroll',
       onMessage: this.receiveMessage.bind(this),
-    }, '#yform-quick-edit-frame');
+    }, '#'+this.frameId);
   }
 
   reload() {
