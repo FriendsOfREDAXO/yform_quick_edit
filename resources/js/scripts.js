@@ -146,22 +146,19 @@ class QuickEdit {
      * receive messages from iFrame
      */
     switch (frame.message) {
-      case rex.yqeClose:
+      case rex.yform_quick_edit_close:
         this.closeFrame(true);
         break
-      case rex.yqeLoaded:
-        this.loaded();
-        break
-      case rex.yqeReload:
+      case rex.yform_quick_edit_reload:
         this.reload();
         break
-      case rex.yqeResize:
+      case rex.yform_quick_edit_resize:
         this.resize();
         break
-      case rex.yqeShowLoading:
+      case rex.yform_quick_edit_show_loading:
         this.showLoading()
         break
-      case rex.yqeHideLoading:
+      case rex.yform_quick_edit_hide_loading:
         this.hideLoading();
         break
     }

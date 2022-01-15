@@ -23,9 +23,9 @@ class QuickEditFrame {
   }
 
   initFrame() {
-    parentIFrame.sendMessage(rex.yqeHideLoading);
+    parentIFrame.sendMessage(rex.yform_quick_edit_hide_loading);
 
-    this.$formBtnToolbar.append('<a href="#" class="btn btn-danger" id="yqe-cancel">'+rex.yqeCancel+'</a>');
+    this.$formBtnToolbar.append('<a href="#" class="btn btn-danger" id="yqe-cancel">'+rex.yform_quick_edit_cancel+'</a>');
     this.$cancelButton = this.$formBtnToolbar.find('#yqe-cancel');
 
     /**
@@ -33,7 +33,7 @@ class QuickEditFrame {
      */
     this.$cancelButton.on('click', event => {
       event.preventDefault();
-      parentIFrame.sendMessage(rex.yqeClose);
+      parentIFrame.sendMessage(rex.yform_quick_edit_close);
     });
 
     /**
@@ -56,7 +56,7 @@ class QuickEditFrame {
     this.$form.on('submit', event => {
       event.preventDefault();
 
-      parentIFrame.sendMessage(rex.yqeShowLoading);
+      parentIFrame.sendMessage(rex.yform_quick_edit_show_loading);
 
       $.ajax({
         type: 'post',
@@ -86,7 +86,7 @@ class QuickEditFrame {
               this.$form.prepend($errorWrapper);
             }
 
-            parentIFrame.sendMessage(rex.yqeResize);
+            parentIFrame.sendMessage(rex.yform_quick_edit_resize);
           }
           else {
             this.success = true;
@@ -96,10 +96,10 @@ class QuickEditFrame {
           console.error('YForm QuickEdit', '  ↴', '\n', e);
         },
         complete: () => {
-          parentIFrame.sendMessage(rex.yqeHideLoading);
+          parentIFrame.sendMessage(rex.yform_quick_edit_hide_loading);
 
           if(this.success) {
-            parentIFrame.sendMessage(rex.yqeClose);
+            parentIFrame.sendMessage(rex.yform_quick_edit_close);
           }
         }
       });
