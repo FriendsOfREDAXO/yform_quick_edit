@@ -6,6 +6,8 @@ $(document).on('rex:ready', function () {
 
 class QuickEdit {
   constructor() {
+    this.ADD_CLASS = 1;
+    this.REMOVE_CLASS = 2;
     this.active = null;
     this.activeFrame = null;
     this.activeRowSelector = null;
@@ -46,7 +48,7 @@ class QuickEdit {
         this.active = id;
         this.frameId = 'yform-quick-edit-frame-'+((Math.random() * 200).toString(36)).replace('.', '');
         this.activeRowSelector = 'tr.quick-edit-row-' + this.active;
-        $(this.activeRowSelector).addClass('active');
+        this.changeActiveRowClass('active', this.ADD_CLASS);
         $row.after('<tr><td style="padding: 0;" colspan="' + colspan + '"><iframe id="'+this.frameId+'" style="border: 0; width: 100%; height: 0; display: block"></iframe></td></tr>');
         $('#'+this.frameId).attr('src', $element.attr('href'));
         $(window).scrollTop($row.offset().top);
@@ -88,7 +90,8 @@ class QuickEdit {
   closeFrame(updateRow) {
     if (this.activeFrame) {
       this.removeFrame();
-      $(this.activeRowSelector).removeClass('active');
+      this.changeActiveRowClass('active', this.REMOVE_CLASS);
+      this.changeActiveRowClass('error', this.REMOVE_CLASS);
 
       if(updateRow) {
         $.get(window.location.href, data => {
@@ -143,6 +146,19 @@ class QuickEdit {
     this.activeRowSelector = null;
   }
 
+  addError() {
+    this.changeActiveRowClass('error', this.ADD_CLASS);
+  }
+
+  changeActiveRowClass(rowClass, type) {
+    if(type === this.ADD_CLASS) {
+      $(this.activeRowSelector).addClass(rowClass);
+    }
+    else if(type === this.REMOVE_CLASS) {
+      $(this.activeRowSelector).removeClass(rowClass);
+    }
+  }
+
   receiveMessage(frame) {
     /**
      * receive messages from iFrame
@@ -162,6 +178,9 @@ class QuickEdit {
         break
       case rex.yform_quick_edit_hide_loading:
         this.hideLoading();
+        break
+      case rex.yform_quick_edit_error:
+        this.addError();
         break
     }
   }

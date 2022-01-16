@@ -86,6 +86,7 @@ class QuickEditFrame {
               this.$form.prepend($errorWrapper);
             }
 
+            parentIFrame.sendMessage(rex.yform_quick_edit_error);
             parentIFrame.sendMessage(rex.yform_quick_edit_resize);
           }
           else {

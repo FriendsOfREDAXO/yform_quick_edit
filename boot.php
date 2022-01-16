@@ -7,14 +7,16 @@ if (\rex::isBackend() && \rex::getUser()) {
     \rex_view::setJsProperty('yform_quick_edit_show_loading', 0x102);
     \rex_view::setJsProperty('yform_quick_edit_hide_loading', 0x103);
     \rex_view::setJsProperty('yform_quick_edit_resize', 0x104);
+    \rex_view::setJsProperty('yform_quick_edit_error', 0x105);
 
     if (rex_get('quick_edit') === 'true') {
         \rex_view::addJsFile($addon->getAssetsUrl('js/vendor/iframeResizer.contentWindow.min.js'));
         \rex_view::addJsFile($addon->getAssetsUrl('js/scripts-frame.js'));
-        \rex_view::addCssFile($addon->getAssetsUrl('css/style.css'));
+        \rex_view::addCssFile($addon->getAssetsUrl('css/styles-frame.css'));
         \rex_view::setJsProperty('yform_quick_edit_cancel', $addon->i18n('yform_quick_edit_cancel'));
     }
     else {
+        \rex_view::addCssFile($addon->getAssetsUrl('css/styles.css'));
         \rex_view::addJsFile($addon->getAssetsUrl('js/vendor/iframeResizer.min.js'));
         \rex_view::addJsFile($addon->getAssetsUrl('js/scripts.js'));
     }
