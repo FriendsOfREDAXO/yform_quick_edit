@@ -3,3 +3,76 @@ tr.error {
     background-color: #f2dede !important;
   }
 }
+
+.yqu-wrapper {
+  background-color: #e9f5ef;
+
+  .yform-container {
+    padding: 5px 10px;
+  }
+
+  .alert {
+    margin: 0 !important;
+  }
+
+  .btn-toolbar .btn-apply {
+    display: none;
+  }
+
+  .rex-form-panel-footer {
+    background-color: #dfe3e9;
+    padding: 5px 10px;
+  }
+
+  .panel-body {
+    padding-bottom: 0;
+  }
+
+  .panel-edit {
+    border: 0;
+    margin-bottom: 0;
+  }
+
+  .rex-page-main,
+  .rex-page-main-inner {
+    padding: 0;
+  }
+
+  .control-label {
+    font-size: 1.2rem;
+  }
+
+  .form-group {
+    margin-bottom: 5px;
+  }
+
+  .panel-body {
+    padding: 10px 15px;
+  }
+}
+
+@mixin quick-edit-dark {
+  tr.error {
+    td {
+      background-color: #3e1212 !important;
+    }
+  }
+
+  .yqu-wrapper {
+    background-color: #1f3d3c;
+
+    .rex-form-panel-footer {
+      background-color: #1a3332;
+    }
+  }
+}
+
+body.rex-theme-dark {
+  @include quick-edit-dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.rex-has-theme:not(.rex-theme-light) {
+    @include quick-edit-dark;
+  }
+}

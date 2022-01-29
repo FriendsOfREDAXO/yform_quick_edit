@@ -1,24 +1,24 @@
 /* global rex */
-
-$(document).on('rex:ready', function () {
-  new QuickEdit()
+$(document).one('rex:ready', function () {
+  new QuickEdit();
 });
 
 class QuickEdit {
   constructor() {
     this.ADD_CLASS = 1;
     this.REMOVE_CLASS = 2;
-    this.active = null;
-    this.activeFrame = null;
+    this.activeId = null;
     this.activeRowSelector = null;
-    this.frameId = null;
+    this.qeId = null;
+    this.$activeQuickEdit = null;
+    this.$activeForm = null;
     this.$rexAjaxLoader = $('#rex-js-ajax-loader');
 
     this.attachEventHandler();
 
     $(document).on('keyup', event => {
       if (event.key === 'Escape') {
-        this.closeFrame();
+        this.closeQuickEdit();
       }
     });
   }
@@ -36,60 +36,133 @@ class QuickEdit {
 
       this.showLoading();
 
-      if (this.active === id) {
-        this.closeFrame();
+      if (this.activeId === id) {
+        this.closeQuickEdit();
         this.hideLoading();
         return;
       }
 
-      if (this.active !== id) {
-        this.closeFrame();
-
-        this.active = id;
-        this.frameId = 'yform-quick-edit-frame-'+((Math.random() * 200).toString(36)).replace('.', '');
-        this.activeRowSelector = 'tr.quick-edit-row-' + this.active;
+      if (this.activeId !== id) {
+        this.closeQuickEdit();
+        this.activeId = id;
+        this.qeId = 'yform-quick-edit-'+((Math.random() * 200).toString(36)).replace('.', '');
+        this.activeRowSelector = 'tr.quick-edit-row-' + this.activeId;
         this.changeActiveRowClass('active', this.ADD_CLASS);
-        $row.after('<tr><td style="padding: 0;" colspan="' + colspan + '"><iframe id="'+this.frameId+'" style="border: 0; width: 100%; height: 0; display: block"></iframe></td></tr>');
-        $('#'+this.frameId).attr('src', $element.attr('href'));
-        $(window).scrollTop($row.offset().top);
+        $row.after('<tr><td style="padding: 0;" colspan="' + colspan + '"><div class="yqu-wrapper" id="'+this.qeId+'"></div></td></tr>');
 
-        this.setIframe();
+        this.showQuickEdit($element.attr('href'), $row);
       }
     })
   }
 
-  setIframe() {
+  showQuickEdit(url, $row) {
     this.showLoading();
 
-    this.activeFrame = iFrameResize({
-      heightCalculationMethod: 'bodyScroll',
-      onMessage: this.receiveMessage.bind(this),
-    }, '#'+this.frameId);
-  }
-
-  reload() {
     /**
-     * reload iframe src
+     * get form
      */
-    if (this.activeFrame) {
-      $(this.activeFrame[0]).attr('src', (i, src) => {
-        return src;
+    $.pjax({
+      url: url,
+      container: '#' + this.qeId,
+      fragment: '#rex-yform',
+      push: false,
+    });
+
+    this.$activeQuickEdit = $('#' + this.qeId);
+
+    this.$activeQuickEdit.on('pjax:end', () => {
+      this.$activeForm = this.$activeQuickEdit.find('form.rex-yform');
+      this.attachSubmitHandler();
+      $(window).scrollTop($row.offset().top);
+    });
+
+    this.$activeQuickEdit.on('pjax:beforeReplace', (event, contents) => {
+      /**
+       * remove fields to ignore
+       */
+      const $content = $(contents);
+      $content.find('.yqe-ignore').each((i, element) => {
+        const $element = $(element);
+        const $formGroup = $element.closest('.form-group');
+
+        if($formGroup.length) {
+          $formGroup.remove();
+        }
+        else {
+          $element.remove();
+        }
       });
-    }
+
+      /**
+       * append cancel button
+       */
+      $content.find('.btn-toolbar').append('<a href="#" class="btn btn-danger" id="yqe-cancel">'+rex.yform_quick_edit_cancel+'</a>');
+      const $cancelButton = $content.find('#yqe-cancel');
+
+      $cancelButton.on('click', event => {
+        event.preventDefault();
+        this.closeQuickEdit();
+      });
+    });
   }
 
-  resize() {
-    /**
-     * resize iframe
-     */
-    if (this.activeFrame) {
-      this.activeFrame[0].iFrameResizer.resize();
-    }
+  attachSubmitHandler() {
+    this.$activeForm.on('submit', event => {
+      event.preventDefault();
+
+      /**
+       * submit form
+       */
+      $.ajax({
+        type: 'post',
+        url: this.$activeForm.attr('action'),
+        data: this.$activeForm.serialize(),
+        success: (response) => {
+          const $document = $(response);
+          const $errorItems = $document.find('form.rex-yform .has-error');
+          const $formErrorWrapper = this.$activeForm.find('.alert-danger');
+          const $errorWrapper = $document.find('form.rex-yform .alert-danger');
+
+          /**
+           * get yform errors
+           */
+          if($errorItems.length) {
+            $('.has-error').removeClass('has-error');
+            this.addError();
+
+            $errorItems.each((i, element) => {
+              const $element = $(element);
+              this.$activeForm.find('#' + $element.attr('id')).addClass('has-error');
+            });
+
+            if($formErrorWrapper.length){
+              $formErrorWrapper.replaceWith($errorWrapper);
+            }
+            else {
+              this.$activeForm.prepend($errorWrapper);
+            }
+          }
+          else {
+            this.success = true;
+          }
+        },
+        error: (e) => {
+          console.error('YForm QuickEdit', '  ↴', '\n', e);
+        },
+        complete: () => {
+          this.hideLoading();
+
+          if(this.success) {
+            this.closeQuickEdit(true);
+          }
+        }
+      });
+    });
   }
 
-  closeFrame(updateRow) {
-    if (this.activeFrame) {
-      this.removeFrame();
+  closeQuickEdit(updateRow) {
+    if (this.$activeQuickEdit) {
+      this.removeQuickEdit();
       this.changeActiveRowClass('active', this.REMOVE_CLASS);
       this.changeActiveRowClass('error', this.REMOVE_CLASS);
 
@@ -117,33 +190,32 @@ class QuickEdit {
             $cells.eq(i).html($updatedCells.eq(i).html());
           }
 
-          this.reset();
+          this.resetQuickEdit();
         });
       }
       else {
-        this.reset();
+        this.resetQuickEdit();
       }
     }
   }
 
-  removeFrame() {
-    if (this.activeFrame) {
+  removeQuickEdit() {
+    if (this.$activeQuickEdit) {
       /**
-       * remove frame
+       * remove quick edit
        */
-      const $parent = $(this.activeFrame[0]).parents('tr');
-      this.activeFrame[0].iFrameResizer.close();
-      $parent.remove();
+      this.$activeQuickEdit.parents('tr').remove();
     }
   }
 
-  reset() {
+  resetQuickEdit() {
     /**
      * reset active elements
      */
-    this.active = null;
-    this.activeFrame = null;
+    this.activeId = null;
     this.activeRowSelector = null;
+    this.$activeForm = null;
+    this.$activeQuickEdit = null;
   }
 
   addError() {
@@ -156,32 +228,6 @@ class QuickEdit {
     }
     else if(type === this.REMOVE_CLASS) {
       $(this.activeRowSelector).removeClass(rowClass);
-    }
-  }
-
-  receiveMessage(frame) {
-    /**
-     * receive messages from iFrame
-     */
-    switch (frame.message) {
-      case rex.yform_quick_edit_close:
-        this.closeFrame(true);
-        break
-      case rex.yform_quick_edit_reload:
-        this.reload();
-        break
-      case rex.yform_quick_edit_resize:
-        this.resize();
-        break
-      case rex.yform_quick_edit_show_loading:
-        this.showLoading()
-        break
-      case rex.yform_quick_edit_hide_loading:
-        this.hideLoading();
-        break
-      case rex.yform_quick_edit_error:
-        this.addError();
-        break
     }
   }
 

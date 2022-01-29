@@ -1,25 +1,10 @@
 <?php
 $addon = \rex_addon::get('yform_quick_edit');
 
-if (\rex::isBackend() && \rex::getUser()) {
-    \rex_view::setJsProperty('yform_quick_edit_close', 0x100);
-    \rex_view::setJsProperty('yform_quick_edit_reload', 0x101);
-    \rex_view::setJsProperty('yform_quick_edit_show_loading', 0x102);
-    \rex_view::setJsProperty('yform_quick_edit_hide_loading', 0x103);
-    \rex_view::setJsProperty('yform_quick_edit_resize', 0x104);
-    \rex_view::setJsProperty('yform_quick_edit_error', 0x105);
-
-    if (rex_get('quick_edit') === 'true') {
-        \rex_view::addJsFile($addon->getAssetsUrl('js/vendor/iframeResizer.contentWindow.min.js'));
-        \rex_view::addJsFile($addon->getAssetsUrl('js/scripts-frame.js'));
-        \rex_view::addCssFile($addon->getAssetsUrl('css/styles-frame.css'));
-        \rex_view::setJsProperty('yform_quick_edit_cancel', $addon->i18n('yform_quick_edit_cancel'));
-    }
-    else {
-        \rex_view::addCssFile($addon->getAssetsUrl('css/styles.css'));
-        \rex_view::addJsFile($addon->getAssetsUrl('js/vendor/iframeResizer.min.js'));
-        \rex_view::addJsFile($addon->getAssetsUrl('js/scripts.js'));
-    }
+if (\rex::isBackend() && \rex::getUser() && ('index.php?page=yform/manager/data_edit' == rex_url::currentBackendPage())) {
+    \rex_view::setJsProperty('yform_quick_edit_cancel', $addon->i18n('yform_quick_edit_cancel'));
+    \rex_view::addCssFile($addon->getAssetsUrl('css/styles.css'));
+    \rex_view::addJsFile($addon->getAssetsUrl('js/scripts.js'));
 
     \rex_extension::register('YFORM_DATA_LIST', function (\rex_extension_point $ep) {
         /** @var rex_list $list */
@@ -32,7 +17,7 @@ if (\rex::isBackend() && \rex::getUser()) {
             'list' => $list->getName(),
             'quick_edit' => 'true',
             'rex_yform_manager_opener' => 1,
-            'search' => false,
+            'yqe' => 'true',
         ];
 
         /**
@@ -49,4 +34,17 @@ if (\rex::isBackend() && \rex::getUser()) {
         $list->setRowAttributes(['class' => 'quick-edit-row-###id###']);
     });
 
+    if (\rex_get('yqe') === 'true') {
+        \rex_extension::register('YFORM_MANAGER_DATA_PAGE', function (\rex_extension_point $ep) {
+            /** @var rex_yform_manager $manager */
+            $manager = $ep->getSubject();
+
+            /**
+             * remove search
+             */
+            if (($key = array_search('search', $manager->dataPageFunctions)) !== false) {
+                unset($manager->dataPageFunctions[$key]);
+            }
+        });
+    }
 }
