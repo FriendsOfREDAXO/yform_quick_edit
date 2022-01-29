@@ -119,7 +119,7 @@ class QuickEdit {
         data: this.$activeForm.serialize(),
         success: (response) => {
           const $document = $(response);
-          const $errorItems = $document.find('form.rex-yform .has-error');
+          const $errorItems = $document.find('form.rex-yform .form-group.has-error');
           const $formErrorWrapper = this.$activeForm.find('.alert-danger');
           const $errorWrapper = $document.find('form.rex-yform .alert-danger');
 
