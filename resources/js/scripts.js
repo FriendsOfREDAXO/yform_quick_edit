@@ -182,18 +182,18 @@ class QuickEdit {
            * TODO: find a better solution :|
            */
           for (let i = 0; i < $updatedCells.length; i++) {
-            let $el;
-            try {
-              $el = $($cells.eq(i).html());
+            let $cell = $cells.eq(i);
+            let $el = $($cell.html());
 
-              if($el.prop('nodeName').toLowerCase() === 'a') {
+            try {
+              if($el.prop('nodeName').toLowerCase() === 'a' || $cell.hasClass('rex-table-action')) {
                 continue;
               }
             }
             catch(err) {
             }
 
-            $cells.eq(i).html($updatedCells.eq(i).html());
+            $cell.html($updatedCells.eq(i).html());
           }
 
           this.resetQuickEdit();
