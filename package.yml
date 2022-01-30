@@ -14,6 +14,7 @@ installer_ignore:
   - .git
   - .gitignore
   - .gitignore
+  - .github
   - package.json
   - yarn.lock
   - resources
