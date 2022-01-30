@@ -13,6 +13,7 @@ class QuickEdit {
     this.$activeQuickEdit = null;
     this.$activeForm = null;
     this.$rexAjaxLoader = $('#rex-js-ajax-loader');
+    this.$fixedNavbar = $('.rex-nav-top-is-fixed');
 
     this.attachEventHandler();
 
@@ -73,7 +74,12 @@ class QuickEdit {
     this.$activeQuickEdit.on('pjax:end', () => {
       this.$activeForm = this.$activeQuickEdit.find('form.rex-yform');
       this.attachSubmitHandler();
-      $(window).scrollTop($row.offset().top);
+
+      let offset = $row.offset().top;
+      if(this.$fixedNavbar.length) {
+        offset -= this.$fixedNavbar.height();
+      }
+      $(window).scrollTop(offset);
     });
 
     this.$activeQuickEdit.on('pjax:beforeReplace', (event, contents) => {
