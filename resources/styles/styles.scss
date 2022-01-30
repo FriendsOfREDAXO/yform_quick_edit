@@ -6,9 +6,17 @@ tr.error {
 
 .yqu-wrapper {
   background-color: #e9f5ef;
+  padding: 5px 10px 0 10px;
 
   .yform-container {
-    padding: 5px 10px;
+    .yform-row {
+      margin-left: -5px;
+      margin-right: -5px;
+
+      .yform-col {
+        padding: 0 5px;
+      }
+    }
   }
 
   .alert {
@@ -22,6 +30,8 @@ tr.error {
   .rex-form-panel-footer {
     background-color: #dfe3e9;
     padding: 5px 10px;
+    margin-left: -10px;
+    margin-right: -10px;
   }
 
   .panel-body {
@@ -48,6 +58,17 @@ tr.error {
 
   .panel-body {
     padding: 10px 15px;
+  }
+
+  .yform-be-relation-wrapper {
+    span.removeadded {
+      top: 2px;
+      right: 5px;
+    }
+
+    > div {
+      padding: 5px 5px 5px 15px;
+    }
   }
 }
 
