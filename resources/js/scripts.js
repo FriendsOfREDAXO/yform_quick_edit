@@ -89,7 +89,7 @@ class QuickEdit {
       const $content = $(contents);
       $content.find('.yqe-ignore').each((i, element) => {
         const $element = $(element);
-        const $formGroup = $element.closest('.form-group');
+        const $formGroup = $element.closest('.form-group, .form-check-group');
 
         if($formGroup.length) {
           $formGroup.remove();
