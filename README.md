@@ -6,5 +6,12 @@ Das kann nützlich sein wenn z.B. in mehreren Datensätzen nur schnell ein Wert 
 
 Einzelne Felder können mit der Klasse `.yqe-ignore` ausgeblendet werden.
 
+Über den EP `YQE_IGNORE_TABLES` lässt sich QuickEdit auf den angegebenen Tabellennamen entfernen. Hierfür einfach ein Array mit Tabellennamen als String übergeben.
+
+```php
+rex_extension::register('YQE_IGNORE_TABLES', function (rex_extension_point $ep) {
+    $ep->setSubject(['rex_event','rex_event_categories']);
+});
+```
 
 ![yqe](https://user-images.githubusercontent.com/2708231/151661458-65e1b0e4-ef53-48f1-bc46-3c55712f7494.png)

@@ -10,8 +10,13 @@ if (\rex::isBackend() && \rex::getUser() && ('index.php?page=yform/manager/data_
         /** @var rex_list $list */
         $list = $ep->getSubject();
         $listParams = $list->getParams();
-        $listParams['rex_yform_manager_popup'] = 1;
+        $formsToIgnore = \rex_extension::registerPoint(new rex_extension_point('YQE_IGNORE_TABLES', []));
 
+        if(in_array($listParams['table_name'], $formsToIgnore)) {
+            return;
+        }
+
+        $listParams['rex_yform_manager_popup'] = 1;
         $params = [
             'func' => 'edit',
             'list' => $list->getName(),
