@@ -1,5 +1,5 @@
 package: yform_quick_edit
-version: "1.0.0"
+version: "1.0.1"
 name: YForm QuickEdit
 author: Friends Of REDAXO
 supportpage: https://github.com/FriendsOfREDAXO/yform_quick_edit
@@ -10,11 +10,21 @@ requires:
         version: '>=7.1'
 
 installer_ignore:
-  - node_modules
   - .git
-  - .gitignore
-  - .gitignore
   - .github
+  - node_modules
+  - tests
+  - tests_output
+  - .editorconfig
+  - .eslintrc.js
+  - .gitignore
+  - .stylelintrc.js
+  - composer.json
+  - composer.lock
+  - nightwatch.conf.js
   - package.json
+  - package-lock.json
   - yarn.lock
+  - phpcs.xml
+  - phpunit.xml
   - resources

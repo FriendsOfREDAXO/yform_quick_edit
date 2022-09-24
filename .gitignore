@@ -1,3 +1,9 @@
 .idea
 /node_modules/
 /resources/styles/.sass-cache/
+/.phpunit.result.cache
+/vendor
+/tests_output/
+/.env
+/test-results/
+/screens/
