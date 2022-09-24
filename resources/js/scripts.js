@@ -117,6 +117,15 @@ class QuickEdit {
       event.preventDefault();
 
       /**
+       * ckeditor5 fix
+       */
+      if (typeof ckeditors !== 'undefined') {
+        for (const ckeditorKey in ckeditors) {
+          ckeditors[ckeditorKey].updateSourceElement();
+        }
+      }
+
+      /**
        * submit form
        */
       $.ajax({
