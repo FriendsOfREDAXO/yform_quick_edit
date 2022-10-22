@@ -1,18 +1,24 @@
 <?php
 $addon = \rex_addon::get('yform_quick_edit');
 
-if (\rex::isBackend() && \rex::getUser() && ('index.php?page=yform/manager/data_edit' == rex_url::currentBackendPage())) {
+if (\rex::isBackend() && \rex::getUser() !== null && ('index.php?page=yform/manager/data_edit' === rex_url::currentBackendPage()))
+{
     \rex_view::setJsProperty('yform_quick_edit_cancel', $addon->i18n('yform_quick_edit_cancel'));
     \rex_view::addCssFile($addon->getAssetsUrl('css/styles.css'));
     \rex_view::addJsFile($addon->getAssetsUrl('js/scripts.js'));
 
-    \rex_extension::register('YFORM_DATA_LIST', function (\rex_extension_point $ep) {
+    \rex_extension::register('YFORM_DATA_LIST', function (\rex_extension_point $ep)
+    {
         /** @var rex_list $list */
         $list = $ep->getSubject();
+        /** @var rex_yform_manager_table  $table */
+        $table = $ep->getParam('table');
         $listParams = $list->getParams();
+        /** @var array<string> $formsToIgnore */
         $formsToIgnore = \rex_extension::registerPoint(new rex_extension_point('YQE_IGNORE_TABLES', []));
 
-        if(in_array($listParams['table_name'], $formsToIgnore)) {
+        if (in_array($listParams['table_name'], $formsToIgnore, true))
+        {
             return;
         }
 
@@ -28,26 +34,27 @@ if (\rex::isBackend() && \rex::getUser() && ('index.php?page=yform/manager/data_
         /**
          * add csrf token -> yform >= 4
          */
-        if(method_exists($ep->getParam('table'), 'getCSRFKey')) {
-            $params['_csrf_token'] = \rex_csrf_token::factory($ep->getParam('table')->getCSRFKey())->getValue();
-        }
+        $params['_csrf_token'] = \rex_csrf_token::factory($table->getCSRFKey())->getValue();
 
         $urlParams = array_merge($listParams, $params);
 
-        $link = '<a class="yform-quick-edit rex-link-expanded" style="white-space: nowrap; font-size: 12px; text-decoration: none;" title="QuickEdit" data-id="###id###" href="'.'index.php?' . http_build_query($urlParams).'&data_id=###id###"><i class="fa fa-pencil"></i> QuickEdit</a>';
+        $link = '<a class="yform-quick-edit rex-link-expanded" style="white-space: nowrap; font-size: 12px; text-decoration: none;" title="QuickEdit" data-id="###id###" href="' . 'index.php?' . http_build_query($urlParams) . '&data_id=###id###"><i class="fa fa-pencil"></i> QuickEdit</a>';
         $list->addColumn('', $link, 1);
         $list->setRowAttributes(['class' => 'quick-edit-row-###id###']);
     });
 
-    if (\rex_get('yqe') === 'true') {
-        \rex_extension::register('YFORM_MANAGER_DATA_PAGE', function (\rex_extension_point $ep) {
+    if (\rex_get('yqe') === 'true')
+    {
+        \rex_extension::register('YFORM_MANAGER_DATA_PAGE', function (\rex_extension_point $ep)
+        {
             /** @var rex_yform_manager $manager */
             $manager = $ep->getSubject();
 
             /**
              * remove search
              */
-            if (($key = array_search('search', $manager->dataPageFunctions)) !== false) {
+            if (($key = array_search('search', $manager->dataPageFunctions, true)) !== false)
+            {
                 unset($manager->dataPageFunctions[$key]);
             }
         });
