@@ -1,13 +1,13 @@
 <?php
-$addon = \rex_addon::get('yform_quick_edit');
+$addon = rex_addon::get('yform_quick_edit');
 
-if (\rex::isBackend() && \rex::getUser() !== null && ('index.php?page=yform/manager/data_edit' === rex_url::currentBackendPage()))
+if (rex::isBackend() && rex::getUser() !== null && ('index.php?page=yform/manager/data_edit' === rex_url::currentBackendPage()))
 {
-    \rex_view::setJsProperty('yform_quick_edit_cancel', $addon->i18n('yform_quick_edit_cancel'));
-    \rex_view::addCssFile($addon->getAssetsUrl('css/styles.css'));
-    \rex_view::addJsFile($addon->getAssetsUrl('js/scripts.js'));
+    rex_view::setJsProperty('yform_quick_edit_cancel', $addon->i18n('yform_quick_edit_cancel'));
+    rex_view::addCssFile($addon->getAssetsUrl('css/styles.css'));
+    rex_view::addJsFile($addon->getAssetsUrl('js/scripts.js'));
 
-    \rex_extension::register('YFORM_DATA_LIST', function (\rex_extension_point $ep)
+    rex_extension::register('YFORM_DATA_LIST', function (\rex_extension_point $ep)
     {
         /** @var rex_list $list */
         $list = $ep->getSubject();
@@ -15,7 +15,7 @@ if (\rex::isBackend() && \rex::getUser() !== null && ('index.php?page=yform/mana
         $table = $ep->getParam('table');
         $listParams = $list->getParams();
         /** @var array<string> $formsToIgnore */
-        $formsToIgnore = \rex_extension::registerPoint(new rex_extension_point('YQE_IGNORE_TABLES', []));
+        $formsToIgnore = rex_extension::registerPoint(new rex_extension_point('YQE_IGNORE_TABLES', []));
 
         if (in_array($listParams['table_name'], $formsToIgnore, true))
         {
@@ -34,7 +34,7 @@ if (\rex::isBackend() && \rex::getUser() !== null && ('index.php?page=yform/mana
         /**
          * add csrf token -> yform >= 4
          */
-        $params['_csrf_token'] = \rex_csrf_token::factory($table->getCSRFKey())->getValue();
+        $params['_csrf_token'] = rex_csrf_token::factory($table->getCSRFKey())->getValue();
 
         $urlParams = array_merge($listParams, $params);
 
@@ -43,9 +43,9 @@ if (\rex::isBackend() && \rex::getUser() !== null && ('index.php?page=yform/mana
         $list->setRowAttributes(['class' => 'quick-edit-row-###id###']);
     });
 
-    if (\rex_get('yqe') === 'true')
+    if (rex_get('yqe') === 'true')
     {
-        \rex_extension::register('YFORM_MANAGER_DATA_PAGE', function (\rex_extension_point $ep)
+        rex_extension::register('YFORM_MANAGER_DATA_PAGE', function (\rex_extension_point $ep)
         {
             /** @var rex_yform_manager $manager */
             $manager = $ep->getSubject();
