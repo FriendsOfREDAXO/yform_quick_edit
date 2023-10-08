@@ -1,14 +1,13 @@
 {
-  "dependencies": {
-    "@babel/cli": "^7.16.8",
-    "@babel/core": "^7.16.7",
-    "@babel/preset-env": "^7.16.8",
-    "babel-preset-minify": "^0.5.1"
-  },
   "devDependencies": {
-    "standard": "^17.0.0"
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.22.20",
+    "babel-preset-minify": "^0.5.2",
+    "semistandard": "^17.0.0",
+    "standard": "^17.1.0"
   },
   "scripts": {
-    "cs-fix": "standard --fix && node resources/js/scripts.js"
+    "cs-fix": "semistandard --fix && node resources/js/scripts.js"
   }
 }
