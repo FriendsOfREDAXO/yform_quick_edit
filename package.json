@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "@babel/cli": "^7.23.0",
-    "@babel/core": "^7.23.0",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.22.20",
     "babel-preset-minify": "^0.5.2",
     "semistandard": "^17.0.0",
